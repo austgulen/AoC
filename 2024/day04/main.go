@@ -89,7 +89,7 @@ func checkValid(input []string, rowIdx int, colIdx int) int {
 		}
 	}
 
-	// up left
+	// up right
 	if rowIdx >= 3 && colIdx >= 3 {
 		if input[rowIdx-1][colIdx-1] == 'M' && input[rowIdx-2][colIdx-2] == 'A' && input[rowIdx-3][colIdx-3] == 'S' {
 			sum++
