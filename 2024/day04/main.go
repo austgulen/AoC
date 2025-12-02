@@ -19,6 +19,7 @@ func main() {
 	input := utils.ReadLineByLine("input.txt")
 	// fmt.Println(input)
 	part1(input)
+	part2(input)
 }
 
 func part1(input []string) {
@@ -26,7 +27,7 @@ func part1(input []string) {
 	// iterate over rows
 	for row := 0; row < len(input); row++ {
 		//iterate over chars in row (cols)
-		fmt.Println(input[row])
+		// fmt.Println(input[row])
 		for col, char := range input[row] {
 			if char == 'X' {
 				// fmt.Println("found x")
@@ -35,6 +36,18 @@ func part1(input []string) {
 		}
 	}
 	fmt.Println("TOTAL NUMBER OF XMAS: ", sum)
+}
+
+func part2(input []string) {
+	sum := 0
+	for row := 1; row < len(input)-1; row++ {
+		for col := 1; col < len(input[row])-1; col++ {
+			if input[row][col] == 'A' {
+				sum += checkValid2(input, row, col)
+			}
+		}
+	}
+	fmt.Println("TOTAL NUMBER OF X-MAS: ", sum)
 }
 
 func checkValid(input []string, rowIdx int, colIdx int) int {
@@ -97,4 +110,16 @@ func checkValid(input []string, rowIdx int, colIdx int) int {
 	}
 
 	return sum
+}
+
+func checkValid2(input []string, row int, col int) int {
+	word1 := string(input[row-1][col-1]) + string(input[row+1][col+1])
+	word2 := string(input[row-1][col+1]) + string(input[row+1][col-1])
+	// fmt.Println(word1, word2)
+	valid1 := word1 == "MS" || word1 == "SM"
+	valid2 := word2 == "MS" || word2 == "SM"
+	if valid1 && valid2 {
+		return 1
+	}
+	return 0
 }
