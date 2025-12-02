@@ -49,3 +49,30 @@ func ReadLineByLine(path string) []string {
 
 	return output
 }
+
+func ReadSections(path string) (rules []string, input []string, er error) {
+	// "fun"-fact i learned: we can declare the return variables in the return signature
+	// of the function! this is very neat, I think at least
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer file.Close()
+	// split reading into two sections:
+	section := 0
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			section++
+			continue
+		}
+		if section == 0 {
+			rules = append(rules, line)
+		} else {
+			input = append(input, line)
+		}
+	}
+	return rules, input, nil
+
+}
