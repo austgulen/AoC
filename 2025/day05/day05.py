@@ -21,13 +21,13 @@ def part1(rules, data):
     ranges = unify_ranges(rules)
     count = 0
     for d in data:
-        print(d)
+        # print(d)
         for r in ranges:
-            if d in range(r[0], r[1] + 1):
+            if d in range(r[0], r[1] + 1):  # + 1, since it is inclusive
                 count += 1
-                print(4 * " ", "yes")
+                # print(4 * " ", "yes")
                 break
-        print("no")
+            # print("no")
     return count
 
 
@@ -48,10 +48,12 @@ def unify_ranges(rules):
 
 
 def part2(rules):
+    # since we already implemented the unify ranges function,
+    # part 2 becomes easy!
     ranges = unify_ranges(rules)
     sum = 0
     for r in ranges:
-        sum += r[1] - r[0] + 1
+        sum += r[1] - r[0] + 1  #! +1 since the range is inclusive
     return sum
 
 
@@ -65,5 +67,5 @@ if __name__ == "__main__":
     #     print(r)
     # for d in data:
     #     print(d)
-    print(part1(rules, data))
-    print(part2(rules))
+    print("Number of fresh ingredients available: ", part1(rules, data))
+    print("Number of fresh     IDs     available: ", part2(rules))
