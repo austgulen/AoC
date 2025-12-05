@@ -35,11 +35,11 @@ def unify_ranges(rules):
     # the idea is to avoid checking all ranges, since many overlap
     # we then sort and combine them
     rules.sort()
-    ranges = []
+    ranges = [rules[0]]
     for r in rules:
         start, end = r
         # print(start, end)
-        if not ranges or start > ranges[-1][1]:
+        if start > ranges[-1][1]:
             ranges.append([start, end])
         else:
             # print(end)
