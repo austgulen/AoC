@@ -61,7 +61,7 @@ def check_valid(grid, row, col):
 
 
 if __name__ == "__main__":
-    path = "example.txt"
+    # path = "example.txt"
     # path = "input.txt"
     grid = read_file(path)
     print(part1(grid))
