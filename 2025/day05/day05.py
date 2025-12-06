@@ -58,8 +58,8 @@ def part2(rules):
 
 
 if __name__ == "__main__":
-    # path = "example.txt"
-    path = "input.txt"
+    path = "example.txt"
+    # path = "input.txt"
     rules, data = read_file(path)
     # print(rules)
     rules.sort()
