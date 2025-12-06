@@ -2,12 +2,11 @@ def read_file(path):
     with open(path, "r") as f:
         content = []
         for line in f:
-            # line.replace(P)
             content.append(line.replace("\n", ""))
-        # content = f.readlines()
     return content
 
 
+# Helpers
 def transpose(sheet):
     return list(zip(*sheet))
 
@@ -36,36 +35,32 @@ def part1(sheet):
 
 
 def part2(sheet):
-    # split into list of chars:
+    # not very efficient i think, but the most intuitive way
+    # (at least to me)
     total = 0
-    # for s in sheet:
-    #     print(s)
+    # split into list of chars: [12 3] -> ['1','2','','3']
     sheet = [list(r) for r in sheet]
-    # for s in sheet:
-    #     print(s)
     lines = transpose(sheet)
-    # create the calcs
+    # create the eqsto be calculated
     equations = []
     cur_eq = []
     for l in lines:
-        print(l)
         if l[-1] == "+" or l[-1] == "*":
             # new operator, means new equations
-            # equations.append(cur_eq)
-            cur_eq = [l[-1]]
+            cur_eq = [l[-1]]  # add the operator first
             num = int("".join(l[:-1]))
             cur_eq.append(num)
             continue
         line = "".join(l).split()
-        # print(line)
         if not line:
-            # print("Empty", line)
+            # line is empty, we have the full eq,
+            # append it to eqs
             equations.append(cur_eq)
         else:
+            # otherwise, we are not done
             cur_eq.append(int(line[0]))
-        # print("".join(eq))
     equations.append(cur_eq)  # the last one aswell!
-    # print((equations))
+    # loop over again. innefficient, but easier to read imo
     for eq in equations:
         if eq[0] == "+":
             res = sum(eq[1:])
