@@ -76,5 +76,5 @@ if __name__ == "__main__":
     path = "example.txt"
     path = "input.txt"
     sheet = read_file(path)
-    print(part1(sheet))
-    print(part2(sheet))
+    print("TOTAL SUM OF VERTICAL EQUATIONS                      : ", part1(sheet))
+    print("TOTAL SUM OF VERTICAL EQUATIONS, W/ VERTICAL NUMBERS : ", part2(sheet))
