@@ -18,6 +18,12 @@ def prod(ls):
     return p
 
 
+def calculate(equation):
+    if equation[0] == "+":
+        return sum(equation[1:])
+    return prod(equation[1:])
+
+
 def part1(sheet):
     # transpose to get each eq on the same line:
     total = 0
@@ -56,18 +62,20 @@ def part2(sheet):
             # line is empty, we have the full eq,
             # append it to eqs
             equations.append(cur_eq)
+            total += calculate(cur_eq)
         else:
             # otherwise, we are not done
             cur_eq.append(int(line[0]))
+    total += calculate(cur_eq)
     equations.append(cur_eq)  # the last one aswell!
     # loop over again. innefficient, but easier to read imo
-    for eq in equations:
-        if eq[0] == "+":
-            res = sum(eq[1:])
-        else:
-            res = prod(eq[1:])
-        total += res
-        # print(eq, res, 10 * " ", total)
+    # for eq in equations:
+    #     if eq[0] == "+":
+    #         res = sum(eq[1:])
+    #     else:
+    #         res = prod(eq[1:])
+    #     total += res
+    #     # print(eq, res, 10 * " ", total)
 
     return total
 
