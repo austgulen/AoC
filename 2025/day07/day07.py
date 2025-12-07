@@ -65,6 +65,7 @@ def strength_map(diagram, row, beam, beam_strength):
     right_map = strength_map(left_map, new_row, beam + 1, beam_strength)
     return right_map
 
+    
 
 def part2_old(diagram):
     # idea: update the map with the "beam strength". Then, we can count it after?
@@ -117,6 +118,33 @@ def part2(diagram):
                 temp[idx] += beams[idx]
         beams = temp
     return beams
+
+def part2_recursive(diagram, row_idx, beams):
+    #memoization
+    #local = [0] * len(diagram[0])
+    #beams[diagram[0].index("S")] = 1
+    split = False
+    for idx in range(row_idx, len(diagram), 1):
+        line = diagram[idx]
+        # print(line)
+        
+        if line[beam_col] == "^":
+            split = True
+            new_row = idx
+            # print(beam_pos, idx, line, diagram[0])
+            left_pos = beam_col - 1
+            right_pos = beam_col + 1
+            beams[left_pos] +=1
+            beams[right_pos] +=1
+            beams[idx]=0
+            break
+
+    if not split:
+        return sum(beams)
+    left = part2_recursive(diagram, new_row, beams)
+    right = part1(l_diag, new_row, beams)
+
+    return left+right
 
 
 if __name__ == "__main__":
