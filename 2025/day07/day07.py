@@ -65,7 +65,6 @@ def strength_map(diagram, row, beam, beam_strength):
     right_map = strength_map(left_map, new_row, beam + 1, beam_strength)
     return right_map
 
-    
 
 def part2_old(diagram):
     # idea: update the map with the "beam strength". Then, we can count it after?
@@ -119,32 +118,40 @@ def part2(diagram):
         beams = temp
     return beams
 
-def part2_recursive(diagram, row_idx, beams):
-    #memoization
-    #local = [0] * len(diagram[0])
-    #beams[diagram[0].index("S")] = 1
+
+def part2_recursive(diagram, beam_pos, beams):
+    # memoization
+    # local = [0] * len(diagram[0])
+    # beams[diagram[0].index("S")] = 1\
+    # print(row_idx)
     split = False
-    for idx in range(row_idx, len(diagram), 1):
+    diagram = diagram.copy()
+    for idx in range(len(diagram)):
+        # print(beams)
+        # print(idx, row_idx, len(diagram))
         line = diagram[idx]
-        # print(line)
-        
-        if line[beam_col] == "^":
+
+        # print(line, beam_pos)
+        if line[beam_pos] == "^":
             split = True
-            new_row = idx
+            # new_row = idx
+            diagram = diagram[idx:]
             # print(beam_pos, idx, line, diagram[0])
-            left_pos = beam_col - 1
-            right_pos = beam_col + 1
-            beams[left_pos] +=1
-            beams[right_pos] +=1
-            beams[idx]=0
+            left_pos = beam_pos - 1
+            right_pos = beam_pos + 1
+            beams[left_pos] += 1
+            beams[right_pos] += 1
+            # beams[beam_pos] = #max(0, beams[idx] - 1)
             break
-
+    # print(beams)
     if not split:
-        return sum(beams)
-    left = part2_recursive(diagram, new_row, beams)
-    right = part1(l_diag, new_row, beams)
-
-    return left+right
+        # print(beams)
+        return beams
+    left_beams = part2_recursive(diagram, left_pos, beams)
+    # print(left_beams)
+    right_beams = part2_recursive(diagram, right_pos, left_beams)
+    # print(left_beams, right_beams)
+    return right_beams  # [right_beams[i] + left_beams[i] for i in range(len(right_beams))]
 
 
 if __name__ == "__main__":
@@ -162,6 +169,11 @@ if __name__ == "__main__":
     print("NUMBER OF BEAM SPLITS : ", p1)
     print("NUMBER OF TIMELINES   : ", p2)
     part2_old(diagram)
+    beams = [0] * len(diagram[0])
+    beam_pos = diagram[0].index("S")
+    beams[beam_pos] = 1
+    a = part2_recursive(diagram, beam_pos, beams)
+    print(a, sum(a))
     # s = 0
     # for r in diag:
     #     for c in r:
