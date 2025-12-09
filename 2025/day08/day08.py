@@ -1,6 +1,37 @@
 import numpy as np
 
 
+# https://www.geeksforgeeks.org/dsa/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/
+# union find by size datastructre. I.e. the smart way to do what we originally tried:
+class UnionFind:
+    def __init__(self, size):
+        self.parent = list(range(size))
+        self.size = [1] * size
+        self.components = size
+
+    def find(self, i):
+        root = self.parent[i]
+        if self.parent[root] != root:
+            self.parent[i] = self.find(root)
+            return self.parent[i]
+
+        return root
+
+    def unite(self, i, j):
+        irep = self.find(i)
+        jrep = self.find(j)
+        if irep == jrep:
+            return
+        if self.size[irep] < self.size[jrep]:
+            self.parent[irep] = jrep
+            self.size[jrep] += self.size[irep]
+            self.components -= 1
+        else:
+            self.parent[jrep] = irep
+            self.size[irep] += self.size[jrep]
+            self.components -= 1
+
+
 def read_file(path):
     with open(path, "r") as f:
         content = []
@@ -30,41 +61,7 @@ def get_distances(coords):
     return distance_matrix
 
 
-def connect_curcuit(dmat, comps, return_idx=False):
-    min_dist = np.min(dmat[dmat > 0])
-    pos = np.where(dmat == min_dist)
-    pos1, pos2 = list([int(p) for p in pos[0]])
-    # new_comp = comps[pos[0]] + comps[pos[1]]
-    # print(pos1, pos2)
-    comps[pos1].add(pos2)
-    comps[pos2].add(pos1)
-    # print(comps)
-    dmat = np.where(dmat == min_dist, 0, dmat)
-    # update comps and dmat with transitive closure:
-    closure = []
-    print("NEW CONNECT FOR ", pos1, pos2)
-    flag = True
-    while flag:
-        flag = False
-        for idx in range(len(comps)):
-            connections = comps[idx]
-            for c in comps[idx]:
-                connections = connections.union(comps[c])
-                # dmat[idx, c] = 0
-            if connections == comps[idx]:
-                continue
-            flag = True
-            print(5 * " ", "UPDATED")
-            comps[idx] = connections
-
-            # transitive closure over all
-            # and update the graph:
-    if return_idx:
-        return [pos1, pos2], dmat, comps
-    return (dmat, comps)
-
-
-def part1(coords, num=10):
+def part1_old(coords, num=10):
     distance_matrix = get_distances(coords)
     # find num many connections:
     components = [set([i]) for i in range(len(distance_matrix))]
@@ -108,7 +105,7 @@ def get_unique_components(components):
     return components
 
 
-def part2(coords):
+def part2_old(coords):
     # do part 1 until we have a single component
     print("part2")
     distance_matrix = get_distances(coords)
@@ -130,17 +127,87 @@ def part2(coords):
     print(x1 * x2)
 
 
+def connect_curcuit_old(dmat, comps, return_idx=False):
+    min_dist = np.min(dmat[dmat > 0])
+    pos = np.where(dmat == min_dist)
+    pos1, pos2 = list([int(p) for p in pos[0]])
+    # new_comp = comps[pos[0]] + comps[pos[1]]
+    # print(pos1, pos2)
+    comps[pos1].add(pos2)
+    comps[pos2].add(pos1)
+    # print(comps)
+    dmat = np.where(dmat == min_dist, 0, dmat)
+    # update comps and dmat with transitive closure:
+    closure = []
+    print("NEW CONNECT FOR ", pos1, pos2)
+    flag = True
+    while flag:
+        flag = False
+        for idx in range(len(comps)):
+            connections = comps[idx]
+            for c in comps[idx]:
+                connections = connections.union(comps[c])
+                # dmat[idx, c] = 0
+            if connections == comps[idx]:
+                continue
+            flag = True
+            print(5 * " ", "UPDATED")
+            comps[idx] = connections
+
+            # transitive closure over all
+            # and update the graph:
+    if return_idx:
+        return [pos1, pos2], dmat, comps
+    return (dmat, comps)
+
+
+# def connect(dmat,)
+def part1(coords):
+    uf = UnionFind(len(coords))
+    dist_mat = get_distances(coords)
+    for _ in range(1000):
+        min_dist = np.min(dist_mat[dist_mat > 0])
+        pos = np.where(dist_mat == min_dist)[0]
+        # print(pos)
+        done = True
+        uf.unite(int(pos[0]), int(pos[1]))
+        dist_mat = np.where(dist_mat == min_dist, 0, dist_mat)
+    sizes = uf.size
+    sizes.sort(reverse=True)
+    return prod(sizes[:3])
+
+
+# def connect()
+def part2(coords):
+    uf = UnionFind(len(coords))
+    dist_mat = get_distances(coords)
+    # print(uf.parent)
+    done = False
+    # while not done:
+    while uf.components > 1:
+        min_dist = np.min(dist_mat[dist_mat > 0])
+        pos = np.where(dist_mat == min_dist)[0]
+        # print(pos)
+        done = True
+        uf.unite(int(pos[0]), int(pos[1]))
+        dist_mat = np.where(dist_mat == min_dist, 0, dist_mat)
+        # print(uf.parent, uf.size, uf.components)
+    return coords[pos[0]][0] * coords[pos[1]][0]
+
+
 if __name__ == "__main__":
     # np.set_printoptions(linewidth=np.inf)
     # path = "example.txt"
     path = "input.txt"
     coords = read_file(path)
-    distance_matrix = get_distances(coords)
+    # distance_matrix = get_distances(coords)
     # for row in distance_matrix:
     #     print(row)
-    min = np.min(distance_matrix[distance_matrix > 0])
-    print("MIN = ", min, " AT : ", np.where(distance_matrix == min))
-    part1(coords)
-    part2(coords)
+    # min = np.min(distance_matrix[distance_matrix > 0])
+    # print("MIN = ", min, " AT : ", np.where(distance_matrix == min))
+    p1 = part1(coords)
+    p2 = part2(coords)
+    print("PRODUCT OF THE 3 LARGETS COMPONENTS              : ", p1)
+    print("PRODUCT OF X- COORDINATED IN THE LAST CONNECTION : ", p2)
     # for row in distance_matrix:
     #     print(row)
