@@ -25,6 +25,14 @@ def part1(coords):
                 points = [(x, y), (x2, y2)]
     print("MAX AREA = ", max_a, " for points : ", points)
 
+def draw_border(coords):
+    # draw the outside shape of the polygon
+    border = []
+    for x, y in tqdm(coords, desc="Draing Border ...")
+        if [x,y] in border:
+            continue
+        border.append()
+
 
 def make_component(coords):
     # define the borders of the component defined by the boordinated:
