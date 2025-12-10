@@ -1,7 +1,6 @@
-import ast
-
 import matplotlib.pyplot as plt
 import networkx as nx
+from scipy.optimize import linprog
 
 
 class DecitionTree:
@@ -35,7 +34,7 @@ def get_wiring(connections):
     new_connections = []
     for c in connections:
         args = c[1:-1].split(",")
-        connection = tuple([int(x) for x in args])
+        connection = [int(x) for x in args]
         new_connections.append(connection)
     return new_connections
 
@@ -105,12 +104,27 @@ def part1(manual):
 
 
 def part2(manual):
-    None
+    # I think there is a way here to convert the problem to linear programming, but I am not sure how yet ...
+    # that is, given button wiring:
+    # (3) , (1,3) , (2) , (2,3) , (0,2) , (0,1)
+    # with joltage requirements:
+    # {3,5,4,7}
+    # We can reframe the problem as a minimization problem:
+    # Min (Sum x_i) s.t.:
+    # x1(b3) + x2(b1,b3) + x3(b2) + x4(b2,b3) + x5(b0,b2) + x6(b0,b1) = 3b0 5b1 4b2 7b3
+    # I think?
+    # Can we map them to primes and optimize for the sum? or is there a smart solution to apply this?
+    for machine in manual:
+        buttons = machine[1]
+        joltage_reqs = machine[2]
+        print(buttons, joltage_reqs)
+        # eq = convert_to_equation()
 
 
 if __name__ == "__main__":
-    # path = "example.txt"
-    path = "input.txt"
+    path = "example.txt"
+    # path = "input.txt"
     manual = read_file(path)
     p1 = part1(manual)
     print("SUM OF MINIMUM PRESSES : ", p1)
+    p2 = part2(manual)
